@@ -3,14 +3,38 @@
 <head>
     <!-- Importing Librairies -->
     <script type="text/javascript" src="./d3.v5.min.js"></script>
+    
     <style>
+        .slidecontainer {
+            width: 100%; /* Width of the outside container */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .slider {
+            width: 50%; /* Full-width */
+
+            opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+        }
+        .slider.hover {
+            opacity: 1;
+        }
+
+        .sliderlabel {
+            text-align: center;
+            vertical-align: middle;
+        }
     </style>
 </head>
 
 <body>
-    <div id="climate-prediction" style="width: 100%;">
-        <script type="text/javascript" src="./climate_visualization.js"></script>
+    <div class="slidecontainer" > 
+        <label class="sliderlabel" for='nCity'> Adjust the number of cities: </label>
+        <input class="slider" type="range" min="1" max="3448" value= "3448" id="nCity"> </input>
     </div>
+
+    <div id="climate-prediction" style="width: 100%;"></div>
+    <script type="text/javascript" src="./climate_visualization.js"></script>
 </body>
 
 </html>

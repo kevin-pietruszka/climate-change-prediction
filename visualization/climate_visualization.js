@@ -11,6 +11,7 @@ let svg = d3
     .append("svg")
     .attr("width", width)
     .attr("height", height);
+
 let countries = svg.append("g").attr("id", "countries");
 let cities = svg.append("g").attr("id", "cities");
 
@@ -24,6 +25,7 @@ let path = d3.geoPath().projection(projection);
 // Constants for the roations and zoom
 const initialScale = projection.scale();
 const sensitivity = 90;
+const base_value = 3448 / 2;
 
 // Load Data
 const city_data = d3.json("./cities.json");
@@ -31,27 +33,37 @@ const world_data = d3.json("./world_countries.json");
 
 Promise.all([world_data, city_data]).then((values) => {
     const w = values[0];
-    const c = values[1].map( (d) => {
-        let circle = d3.geoCircle().center([d[3], d[2]]).radius(0.25) ();
-        circle.city = d[0]
-        circle.country = d[1]
+    const c = values[1].map((d) => {
+        let circle = d3.geoCircle().center([d[3], d[2]]).radius(0.25)();
+        circle.city = d[0];
+        circle.country = d[1];
+        circle.lat = d[2];
+        circle.lng = d[3];
         return circle;
     });
 
-
     // Draw cities
-    const draw_cities = () => {
+    const draw_cities = (city_circles) => {
         cities
-        .selectAll("path")
-        .data(c)
-        .enter()
-        .append("path")
-        .attr("d", path)
-        .on('mouseover', (d) => {
-            console.log(d.city + ", " + d.country);
+            .selectAll("path")
+            .data(city_circles)
+            .enter()
+            .append("path")
+            .attr("d", path)
+            .on("mouseover", (d) => {
+                console.log(d.city + ", " + d.country);
+            });
+    };
+
+    // Redraw circles based on slider value
+    d3.select("#nCity")
+        .attr("width", width)
+        .on("input", function () {
+            let new_order = d3.shuffle(c.slice()).slice(0, this.value);
+            cities.selectAll("path").remove();
+            draw_cities(new_order);
         });
-    }
-    draw_cities();
+    draw_cities(c);
 
     // Draw country borders
     countries
