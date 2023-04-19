@@ -9,6 +9,11 @@ __pycache__/
 # Project Data
 data/
 
+# Intellisense for d3
+visualization/node_modules/
+visualization/package-lock.json
+visualization/package.json
+
 # Distribution / packaging
 .Python
 build/
