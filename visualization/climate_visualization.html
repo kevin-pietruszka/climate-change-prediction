@@ -72,15 +72,22 @@
         </div>
     </div>
 
+    <script> 
+        const on_change = (event) => {
+            console.log(event);
+        }
+    </script>
+
     <div class="globecontainer" id="climate-prediction"></div>
     <div class="graphscontainer" id="graphs"> 
         <button id="worldmapbutton"> To the World Map </button>
         <label for="beginyear"> Start Year:  </label>
-        <input id="beginyear"> </input>
+        <input id="beginyear" type="number" min="1900" max="2126" step="1" value="1990" onchange=on_change> </input>
         <label for="endyear"> End Year:  </label>
-        <input id="endyear"> </input>
+        <input id="endyear" type="number" min="1901" max="2127"  value="2030" > </input>
         <button id="visualize"> Visualize </button>
     </div>
+    
     <script type="text/javascript" src="./climate_visualization.js"></script>
 </body>
 

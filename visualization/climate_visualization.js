@@ -2,8 +2,8 @@
 let width = d3
     .select("#climate-prediction")
     .node()
-    .getBoundingClientRect().width;
-let height = 900;
+    .getBoundingClientRect().width - 20;
+let height = 850;
 
 let margin = {
     top: 30,
@@ -23,17 +23,9 @@ let cities = svg.append("g").attr("id", "cities");
 let line_graph = d3
     .select("#graphs")
     .append("svg")
-    .attr('id', 'line_graph_svg')
+    .attr("id", "line_graph_svg")
     .attr("width", width)
     .attr("height", height);
-
-//Button to go to visualization for graphs
-const toTop = () => {
-    d3.select('#line_graph_svg').selectAll('*').remove();
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-};
-d3.select("#worldmapbutton").on("click", toTop);
 
 // Map for the world coordinates
 let projection = d3
@@ -55,6 +47,26 @@ const min_year = 1900;
 const max_year = 2127;
 
 let processing = false;
+let start_year = 1990;
+let end_year = 2030;
+let displayed = false;
+
+let current_city = "";
+let current_country = "";
+
+//Button to go to visualization for graphs
+const toTop = () => {
+    d3.select("#line_graph_svg").selectAll("*").remove();
+    displayed = false;
+    current_city = "";
+    current_country = "";
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+};
+d3.select("#worldmapbutton").on("click", toTop);
+
+let begin_input = d3.select("#beginyear");
+let end_input = d3.select("#endyear");
 
 // Load Data
 const city_data = d3.json("./cities.json");
@@ -78,10 +90,7 @@ Promise.all([world_data, city_data]).then((values) => {
     });
 
     // Line Graph info
-    const draw_line_graph = (x, y) => {
-        // console.log(x);
-        // console.log(y);
-
+    const draw_line_graph = (x, y, city, country) => {
         let x_scale = d3
             .scaleTime()
             .range([margin.left, width - margin.right])
@@ -110,6 +119,16 @@ Promise.all([world_data, city_data]).then((values) => {
             .append("g")
             .attr("transform", "translate(" + margin.left + " ," + 0 + ")")
             .call(d3.axisLeft(y_scale));
+
+        let title_name = city + ", " + country;
+        line_graph
+            .append("text")
+            .attr("transform", `translate(${margin.left},${margin.top})`)
+            .text(title_name)
+            .attr("id", "temp-title")
+            .attr("x", width / 2)
+            .attr("y", 0)
+            .attr("text-anchor", "middle");
 
         const data = [];
         x.map((d, i) => {
@@ -144,6 +163,9 @@ Promise.all([world_data, city_data]).then((values) => {
         city_name,
         country_name
     ) => {
+        current_city = city_name;
+        current_country = country_name;
+
         let promises = [];
         curr_year = start_year;
         while (curr_year <= end_year) {
@@ -168,9 +190,26 @@ Promise.all([world_data, city_data]).then((values) => {
 
             draw_line_graph(times, temperatures, city_name, country_name);
             to_graphs();
+            displayed = true;
             processing = false;
         });
     };
+
+    d3.select("#visualize").on("click", () => {
+        if (!displayed) {
+            return;
+        }
+
+        // Magic stuff to get value of input
+        let v1 = +begin_input._groups[0][0].value;
+        let v2 = +end_input._groups[0][0].value;
+
+        if (v1 > v2 || v1 < min_year || v2 > max_year) {
+            alert("Invalid range of dates");
+        }
+        d3.select("#line_graph_svg").selectAll("*").remove();
+        get_city_temperatures(v1, v2, current_city, current_country);
+    });
 
     // Draw cities
     const draw_cities = (city_circles) => {
@@ -185,16 +224,20 @@ Promise.all([world_data, city_data]).then((values) => {
                     return; // City was already clicked
                 }
                 processing = true;
-                d3.select('#line_graph_svg').selectAll('*').remove();
+                displayed = false;
+                d3.select("#line_graph_svg").selectAll("*").remove();
                 get_city_temperatures(1990, 2030, d.city, d.country);
             });
     };
 
+    let magic = d3.select("#nCity");
+
     // Redraw circles based on slider value
     d3.select("#nCity")
         .attr("width", width)
-        .on("input", function () {
-            let new_order = d3.shuffle(c.slice()).slice(0, this.value);
+        .on("input", () => {
+            let new_size = +magic._groups[0][0].value;
+            let new_order = d3.shuffle(c.slice()).slice(0, new_size);
             cities.selectAll("path").remove();
             draw_cities(new_order);
         });
