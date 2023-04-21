@@ -1,0 +1,49 @@
+        .globecontainer {
+            width: 100%;
+            outline-style: solid;
+            outline-width: 2px;
+            outline-color: black;
+        }
+
+        .headercontainer {
+            outline-style: solid;
+            outline-width: 2px;
+            outline-color: black;
+        }
+        .graphscontainer {
+            outline-style: solid;
+            outline-width: 2px;
+            outline-color: black;
+        }
+
+        .titlecontainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title {
+            text-align: center;
+            vertical-align: middle;
+            font-size:xx-large;
+        }
+        
+        .slidecontainer {
+            width: 100%; /* Width of the outside container */
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .slider {
+            width: 50%; /* Full-width */
+            opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+        }
+        .slider.hover {
+            opacity: 1;
+        }
+
+        .sliderlabel {
+            text-align: center;
+            vertical-align: middle;
+        }
