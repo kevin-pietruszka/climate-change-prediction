@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <!-- Importing Librairies -->
+    <script type="text/javascript" src="./d3.v5.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="headercontainer"> 
+        <div class="titlecontainer">
+            <p class="title" > Global Temperatures Visualization </p>
+        </div>
+    </div>
+
+    <script> 
+        const on_change = (event) => {
+            console.log(event);
+        }
+    </script>
+
+    <div class="parentcontainer" id="parentcontainer">
+        <div class="globecontainer" id="climate-prediction">
+            <div class="slidecontainer" > 
+                <label class="sliderlabel" for='nCity'> Adjust the number of cities: </label>
+                <input class="slider" type="range" min="1" max="3448" value= "3448" id="nCity"> </input>
+            </div>
+        </div>
+        <div class="graphscontainer" id="graphs"> 
+            <button id="worldmapbutton"> To the World Map </button>
+            <label for="beginyear"> Start Year:  </label>
+            <input id="beginyear" type="number" min="1900" max="2126" step="1" value="1990" onchange=on_change> </input>
+            <label for="endyear"> End Year:  </label>
+            <input id="endyear" type="number" min="1901" max="2127"  value="2030" > </input>
+            <button id="visualize"> Visualize </button>
+        </div>
+    </div>
+
+    
+    
+    <script type="text/javascript" src="./climate_visualization.js"></script>
+</body>
+
+</html>
